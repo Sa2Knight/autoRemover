@@ -20,18 +20,24 @@ class Twitter
         :token => a_token,
         :secret => a_secret
     )
+
+    # フォロー一覧
+    @follow_list = nil
+
+    # フォロワー一覧
+    @follower_list = nil
   end
 
   # follow_list フォローしているユーザ一のID一覧を取得
   #---------------------------------------------------------------------
   def follow_list
-    @twitter.friends_ids['ids']
+    @follow_list or @twitter.friends_ids['ids']
   end
 
   # follower_list フォロワーのID一覧を取得
   #---------------------------------------------------------------------
   def follower_list
-    @twitter.followers_ids['ids']
+    @follower_list or @twitter.followers_ids['ids']
   end
 
   # only_follow_list 片思いフォローしているユーザのID一覧を取得
@@ -43,15 +49,21 @@ class Twitter
   # get_last_tweet_by_userid - ユーザIDを指定して、そのユーザの直近のツイートを取得
   #---------------------------------------------------------------------
   def get_last_tweet_by_userid(userid)
-    @twitter.user_timeline(:user_id => userid, :trim_user => true, :count => 1).first
+    @twitter.user_timeline(:user_id => userid, :count => 1).first
   end
 
   # verify_last_tweet_time - 指定したユーザが指定した日時以降にツイートをしていることを検証する
   #---------------------------------------------------------------------
-  def verify_last_tweet_time(user_id, date_from)
+  def verify_last_tweet_time(user_id, date_from, verbose = false)
     last_tweet = self.get_last_tweet_by_userid(user_id)
     last_tweet_date = DateTime.parse(last_tweet['created_at'])
-    return last_tweet_date > date_from
+    is_used = last_tweet_date > date_from
+    if verbose && ! is_used
+      puts "------------------------------------"
+      puts last_tweet["user"]["screen_name"]
+      puts "最終ツイート日時 #{last_tweet_date.strftime("%Y/%m/%d %H:%M")}"
+    end
+    return is_used
   end
 
 end
