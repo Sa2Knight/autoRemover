@@ -26,7 +26,8 @@ GitHubからclone
 > $ sudo bundle install --path vendor/bundle
 ライブラリ内の一部ファイルを修正(最新のRestAPI仕様に対応していないため)
 vendor/bundle/ruby/2.2.0/gems/twitter_oauth-0.4.94/lib/twitter_oauth
-```
+
+```ruby
 def unfriend(id)
   post("/friendships/destroy.json", :user_id => id)
   #post("/friendships/destroy/#{id}.json")
@@ -35,7 +36,7 @@ end
 
 # 実行方法
 下記のように、各種APIキーをJSONで記述した、secret.jsonを作成する
-```
+```json
 {
   "api_key": "hogehogehogehogehogehogehoge",
   "api_secret": "fugafugafugafugafugafugafuga",
@@ -44,9 +45,12 @@ end
 }
 ```
 以下のコマンドでスクリプトを実行
+
 > $ bundle exec ruby main.rb
+
 以下のように、画面の指示に従って番号を入力するとスクリプトが実行される
-```
+
+```bash
 $ bundle exec ruby main.rb
 (1) 片思いユーザをリムーブする
 (2) 3ヶ月以上ツイートしていないユーザをリムーブする
