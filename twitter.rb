@@ -1,3 +1,4 @@
+require 'date'
 require 'twitter_oauth'
 class Twitter
 
@@ -37,6 +38,20 @@ class Twitter
   #---------------------------------------------------------------------
   def only_follow_list
     self.follow_list - self.follower_list
+  end
+
+  # get_last_tweet_by_userid - ユーザIDを指定して、そのユーザの直近のツイートを取得
+  #---------------------------------------------------------------------
+  def get_last_tweet_by_userid(userid)
+    @twitter.user_timeline(:user_id => userid, :trim_user => true, :count => 1).first
+  end
+
+  # verify_last_tweet_time - 指定したユーザが指定した日時以降にツイートをしていることを検証する
+  #---------------------------------------------------------------------
+  def verify_last_tweet_time(user_id, date_from)
+    last_tweet = self.get_last_tweet_by_userid(user_id)
+    last_tweet_date = DateTime.parse(last_tweet['created_at'])
+    return last_tweet_date > date_from
   end
 
 end
