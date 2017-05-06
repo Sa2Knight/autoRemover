@@ -21,4 +21,22 @@ class Twitter
     )
   end
 
+  # follow_list フォローしているユーザ一のID一覧を取得
+  #---------------------------------------------------------------------
+  def follow_list
+    @twitter.friends_ids['ids']
+  end
+
+  # follower_list フォロワーのID一覧を取得
+  #---------------------------------------------------------------------
+  def follower_list
+    @twitter.followers_ids['ids']
+  end
+
+  # only_follow_list 片思いフォローしているユーザのID一覧を取得
+  #---------------------------------------------------------------------
+  def only_follow_list
+    self.follow_list - self.follower_list
+  end
+
 end
