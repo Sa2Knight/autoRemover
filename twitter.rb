@@ -22,7 +22,7 @@ class Twitter
     )
 
     # フォロー/フォロワーの最大取得人数
-    @list_limit = 50
+    @list_limit = 5000
 
     # フォロー一覧
     @follow_list = nil
@@ -36,20 +36,21 @@ class Twitter
 
   # follow_list フォローしているユーザ一のID一覧を取得
   #---------------------------------------------------------------------
-  def follow_list
-    @follow_list or @twitter.friends_ids(:count => @list_limit)['ids']
+  def follow_list(offset = 0)
+    @follow_list or @twitter.friends_ids(:count => @list_limit)['ids'].drop(offset)
   end
 
   # follower_list フォロワーのID一覧を取得
   #---------------------------------------------------------------------
-  def follower_list
-    @follower_list or @twitter.followers_ids(:count => @list_limit)['ids']
+  def follower_list(offset = 0)
+    @follower_list or @twitter.followers_ids(:count => @list_limit)['ids'].drop(offset)
   end
 
   # only_follow_list 片思いフォローしているユーザのID一覧を取得
   #---------------------------------------------------------------------
-  def only_follow_list
-    self.follow_list - self.follower_list
+  def only_follow_list(offset = 0)
+    list = self.follow_list - self.follower_list
+    list.drop(offset)
   end
 
   # get_last_tweet_by_userid - ユーザIDを指定して、そのユーザの直近のツイートを取得
@@ -63,7 +64,12 @@ class Twitter
   # id_to_name - キャッシュ表を元にユーザIDをスクリーンネームに変換する
   #---------------------------------------------------------------------
   def id_to_name(userid)
-    @id_to_name_table[userid] or userid
+    unless @id_to_name_table[userid]
+      if userinfo = @twitter.show(userid)
+        @id_to_name_table[userid] = userinfo['screen_name']
+      end
+    end
+    return @id_to_name_table[userid] || userid
   end
 
   # remove - ユーザIDを指定してリムーブする
@@ -86,7 +92,6 @@ class Twitter
     end
     is_used = last_tweet_date > date_from
     if verbose && ! is_used
-      puts "------------------------------------"
       puts "@#{self.id_to_name(user_id)}"
       puts "最終ツイート日時 #{last_tweet_date.strftime("%Y/%m/%d %H:%M")}"
     end
