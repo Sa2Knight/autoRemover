@@ -20,11 +20,17 @@ TwitterAPIを利用するための以下の4種のパラメータを用意済み
 * ACCESS SECRET
 
 # インストール方法
+
 GitHubからclone
+
 > $ git clone git@github.com:Sa2Knight/autoRemover.git
+
 ライブラリをインストール
+
 > $ sudo bundle install --path vendor/bundle
+
 ライブラリ内の一部ファイルを修正(最新のRestAPI仕様に対応していないため)
+
 vendor/bundle/ruby/2.2.0/gems/twitter_oauth-0.4.94/lib/twitter_oauth
 
 ```ruby
