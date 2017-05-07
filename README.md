@@ -70,3 +70,7 @@ $ bundle exec ruby main.rb
 【************ をリムーブしました】
 $
 ```
+
+# その他
+本ツールをベースにした拡張ツール
+https://github.com/Sa2Knight/TwitterAssistant
